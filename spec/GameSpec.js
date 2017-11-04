@@ -12,6 +12,15 @@ describe("Game", function () {
     expect(game.currentRoll).toEqual(1)
   })
 
+  describe("randomBowl", function () {
+    it("returns a random bowl that does not exceed remaining pins", function () {
+      spyOn(Math, 'random').and.returnValue(0.99)
+      game.play(9)
+      expect(game.randomBowl()).toEqual(1)
+    })
+
+  })
+
   describe("play", function () {
 
     it("updates current score when an argument for number of hit pins is given", function () {
