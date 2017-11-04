@@ -24,12 +24,10 @@ describe("Game", function () {
       expect(function () { game.play(4) }).toThrow('Number exceeds reminaing pins')
     })
 
-    it("updates current score when a random number of pins are hit", function () {
-      spyOn(game,'bowl').and.returnValues(7, 2, 10, 4, 2)
-      for (var i = 0; i < 5; i++) {
-        game.play()
-      }
-      expect(game.currentScore).toEqual(31)
+    it("bowls a random number when no argument is passed", function () {
+      spyOn(game, 'randomBowl')
+      game.play()
+      expect(game.randomBowl).toHaveBeenCalled()
     })
 
     it("updates scorecard with number of pins hit", function () {
@@ -43,88 +41,62 @@ describe("Game", function () {
     })
 
     it("updates scorecard with score for the current frame", function () {
-      game.play(3)
-      game.play(6)
+      playManyDifferent([3, 6])
       expect(game.scorecard[1]['frameScore']).toEqual(9)
     })
 
     it("adds bonus points to the frame where a strike was bowled", function () {
-      playMany([10, 3, 4])
+      playManyDifferent([10, 3, 4])
       expect(game.scorecard[1]['frameScore']).toEqual(17)
     })
 
     it("adds bonus points to the frame where a spare was bowled", function () {
-      spyOn(game,'bowl').and.returnValues(2, 8, 6, 3)
-      for (var playIndex = 0; playIndex < 4; playIndex++) {
-        game.play()
-      }
+      playManyDifferent([2, 8, 6, 3])
       expect(game.scorecard[1]['frameScore']).toEqual(16)
     })
 
     it("adds bonus points to previous two frames with two consecutive strikes", function () {
-      spyOn(game,'bowl').and.returnValues(10, 10, 4, 5)
-      for (var playIndex = 0; playIndex < 4; playIndex++) {
-        game.play()
-      }
+      playManyDifferent([10, 10, 4, 5])
       expect(game.scorecard[1]['frameScore']).toEqual(24)
       expect(game.scorecard[2]['frameScore']).toEqual(19)
     })
 
-    describe("lastFrame", function () {
+    describe("given that it is the last frame", function () {
+
+      beforeEach(function () {
+        playManySame(1, 18)
+      })
+
       it("adds points to scorecard if player strikes on first roll", function () {
-        spyOn(game,'bowl').and.returnValues(1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 10)
-        for (var playIndex = 0; playIndex < 19; playIndex++) {
-          game.play()
-        }
+        game.play(10)
         expect(game.scorecard[10]['frameScore']).toEqual(10)
       })
       it("if player rolls a strike, the pins are reset for the next roll", function () {
-        spyOn(game,'bowl').and.returnValues(1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 10)
-        for (var playIndex = 0; playIndex < 19; playIndex++) {
-          game.play()
-        }
+        game.play(10)
         expect(game.scorecard[10]['remainingPins']).toEqual(10)
       })
       it("if player rolls a spare, the pins are reset for the next roll", function () {
-        spyOn(game,'bowl').and.returnValues(1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 2, 8)
-        for (var playIndex = 0; playIndex < 20; playIndex++) {
-          game.play()
-        }
+        playManyDifferent([2, 8])
         expect(game.scorecard[10]['remainingPins']).toEqual(10)
       })
       it("if player rolls a strike on the first roll but not on the second, player can roll the bonus", function () {
-        spyOn(game,'bowl').and.returnValues(1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 10, 8, 1)
-        for (var playIndex = 0; playIndex < 21; playIndex++) {
-          game.play()
-        }
+        playManyDifferent([10, 8, 1])
         expect(game.scorecard[10][3]['hitPins']).toEqual(1)
       })
       it("if player rolls a strike on the first and second rolls, player can roll the bonus", function () {
-        spyOn(game,'bowl').and.returnValues(1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 10, 10, 3)
-        for (var playIndex = 0; playIndex < 21; playIndex++) {
-          game.play()
-        }
+        playManyDifferent([10, 10, 3])
         expect(game.scorecard[10][3]['hitPins']).toEqual(3)
       })
       it("calculates final score when game is over with no third roll", function () {
-        spyOn(game,'bowl').and.returnValues(1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 3, 2)
-        for (var playIndex = 0; playIndex < 20; playIndex++) {
-          game.play()
-        }
-        expect(game.finalScore).toEqual(23)
+        playManySame(1, 2)
+        expect(game.finalScore).toEqual(20)
       })
       it("calculates final score when game is over with a third roll", function () {
-        spyOn(game,'bowl').and.returnValues(1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 10, 2, 3)
-        for (var playIndex = 0; playIndex < 21; playIndex++) {
-
-          game.play()
-        }
+        playManyDifferent([10, 2, 3])
         expect(game.finalScore).toEqual(33)
       })
       it("prevents play when game is over", function () {
-        for (var playIndex = 0; playIndex < 20; playIndex++) {
-          game.play(0)
-        }
+        playManySame(1, 2)
         expect(function () { game.play(0) }).toThrow("This game has ended")
       })
 
