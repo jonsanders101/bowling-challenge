@@ -121,16 +121,16 @@ describe("Game", function () {
       it("calculates final score when game is over with a third roll", function () {
         spyOn(game,'bowl').and.returnValues(1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 10, 2, 3)
         for (var i = 0; i < 21; i++) {
+
           game.play()
         }
         expect(game.finalScore).toEqual(33)
       })
       it("prevents play when game is over", function () {
-        spyOn(game,'bowl').and.returnValues(1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 10, 2, 3)
-        for (var i = 0; i < 21; i++) {
-          game.play()
+        for (var playIndex = 0; playIndex < 20; playIndex++) {
+          game.play(0)
         }
-        expect(game.play()).toEqual("Game over")
+        expect(game.play(0)).toEqual("Game over")
       })
 
     })
