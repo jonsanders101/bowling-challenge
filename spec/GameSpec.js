@@ -130,7 +130,7 @@ describe("Game", function () {
         for (var playIndex = 0; playIndex < 20; playIndex++) {
           game.play(0)
         }
-        expect(game.play(0)).toEqual("Game over")
+        expect(function () { game.play(0) }).toThrow("This game has ended")
       })
 
     })
