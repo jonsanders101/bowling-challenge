@@ -70,7 +70,7 @@ var Game = function () {
 
 Game.prototype.play = function (hitPins) {
   if (typeof this.finalScore === 'number') throw "This game has ended"
-  if (hitPins === undefined) var hitPins = this.randomBowl()
+  if (hitPins === undefined) var hitPins = this._randomBowl()
   if (hitPins > this.scorecard[this.currentFrame]['remainingPins']) throw 'Number exceeds reminaing pins'
   this._updateScorecard(hitPins)
   this._updateCurrentScore()
@@ -89,7 +89,7 @@ Game.prototype._updateCurrentScore = function () {
   }
 }
 
-Game.prototype.randomBowl = function () {
+Game.prototype._randomBowl = function () {
   return (Math.floor((Math.random() * this._getRemainingPins() + 1)))
 }
 
