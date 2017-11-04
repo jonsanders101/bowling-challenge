@@ -33,28 +33,23 @@ describe("Game", function () {
     })
 
     it("updates scorecard with number of pins hit", function () {
-      spyOn(game,'bowl').and.returnValue(3)
-      game.play()
-      expect(game.scorecard[1][1]['hitPins']).toEqual(3)
+      game.play(4)
+      expect(game.scorecard[1][1]['hitPins']).toEqual(4)
     })
 
     it("updates scorecard with number of remaining pins in current frame", function () {
-      spyOn(game,'bowl').and.returnValue(2)
-      game.play()
+      game.play(2)
       expect(game.scorecard[1]['remainingPins']).toEqual(8)
     })
 
     it("updates scorecard with score for the current frame", function () {
-      spyOn(game,'bowl').and.returnValue(3)
-      game.play()
-      expect(game.scorecard[1]['frameScore']).toEqual(3)
+      game.play(3)
+      game.play(6)
+      expect(game.scorecard[1]['frameScore']).toEqual(9)
     })
 
     it("adds bonus points to the frame where a strike was bowled", function () {
-      spyOn(game,'bowl').and.returnValues(10, 3, 4)
-      for (var playIndex = 0; playIndex < 3; playIndex++) {
-        game.play()
-      }
+      playMany([10, 3, 4])
       expect(game.scorecard[1]['frameScore']).toEqual(17)
     })
 
