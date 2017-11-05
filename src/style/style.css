@@ -18,6 +18,10 @@ h1 {
   margin-bottom: 0;
 }
 
+.table-container {
+  overflow-x: auto;
+}
+
 .red-stripe {
   background-color: red;
   height: 20px;
@@ -34,6 +38,14 @@ table, th, td {
   border: 1px solid blue;
   padding: 2px;
   margin: 0 auto;
+}
+
+th, td {
+  width: 50px;
+}
+
+td[class*="s"] {
+  font-weight: bold;
 }
 
 .pin-buttons {

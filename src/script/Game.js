@@ -94,7 +94,7 @@ Game.prototype._randomBowl = function () {
 }
 
 Game.prototype.setNextRoll = function () {
-  if ((this._isAStrike()) || (this.currentRoll === 2)) {
+  if ((this._isAStrike(this.currentRoll)) || (this.currentRoll === 2)) {
     this.currentFrame++
     this.currentRoll = 1
   } else {
@@ -123,16 +123,16 @@ Game.prototype._updateScorecard = function (hitPins) {
   if (this.currentFrame >= 2) this._addBonusPoints(hitPins)
 }
 
-Game.prototype._isAStrike = function () {
-  return ((this.currentRoll === 1) && (this._isNoPins()))
+Game.prototype._isAStrike = function (roll) {
+  return ((roll === 1) && (this._isNoPins()))
 }
 
 Game.prototype._isNoPins = function () {
   return (this.scorecard[this.currentFrame]['remainingPins'] === 0)
 }
 
-Game.prototype._isASpare = function () {
-  return ((this.currentRoll === 2) && (this._isNoPins()))
+Game.prototype._isASpare = function (roll) {
+  return ((roll === 2) && (this._isNoPins()))
 }
 
 Game.prototype._addStrikeBonuses = function () {
@@ -160,13 +160,13 @@ Game.prototype._isThirdBall = function () {
 }
 
 Game.prototype.lastFrame = function () {
-  if (this._isAStrike()) this.scorecard[this.currentFrame]['remainingPins'] = 10
+  if (this._isAStrike(this.currentRoll)) this.scorecard[this.currentFrame]['remainingPins'] = 10
   if (this.currentRoll === 1) {
     this.currentRoll = 2
     return
   }
   if (this._isThirdBall()) {
-    if (this._isASpare()) this.scorecard[this.currentFrame]['remainingPins'] = 10
+    if (this._isASpare(this.currentRoll)) this.scorecard[this.currentFrame]['remainingPins'] = 10
     this.currentRoll = 3
     return
   }
