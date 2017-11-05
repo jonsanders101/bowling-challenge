@@ -34,25 +34,56 @@ $ cd bowling-challenge
 $ open SpecRunner.html
 ```
 
-### Project Review
+## Directory Structure
+```
+|-- bowling-challenge
+    |-- .eslintrc.js
+    |-- .gitignore
+    |-- MIT.LICENSE
+    |-- README.md
+    |-- SpecRunner.html
+    |-- index.html
+    |-- package-lock.json
+    |-- package.json
+    |-- docs
+    |   |-- review.md
+    |-- images
+    |   |-- example_ten_pin_scoring.png
+    |   |-- screenshot.png
+    |-- lib
+    |   |-- jquery-3.2.1.js
+    |   |-- jasmine-2.8.0
+    |       |-- boot.js
+    |       |-- console.js
+    |       |-- jasmine-html.js
+    |       |-- jasmine.css
+    |       |-- jasmine.js
+    |       |-- jasmine_favicon.png
+    |-- spec
+    |   |-- GameSpec.js
+    |   |-- ScoreCardSpec.js
+    |   |-- SpecHelper.js
+    |-- src
+    |   |-- .DS_Store
+    |   |-- script
+    |   |   |-- Game.js
+    |   |   |-- interface.js
+    |   |-- style
+    |       |-- style.css
+    |-- view
+```
+
+## Project Review
 
 This is a non-exhaustive list of weaknesses I have identified in this project and actions to improve these.
 
-## Implementation
+### Implementation
 * The scorecard is currently implemented through one monolithic `Game` object. To improve on this design, I would extract implementation into `Scorecard` and `Frame` classes which would remove the need for the large object currently held in the `Game` object.
 * I would also add a `Match` object which could handle multiple `Game` objects, allowing the user to see total points scored over multiple games.
 * A big weakness of implementing the scorecard through this scorecard object is the long, repetitive statements used to access particular values within the object (e.g. `this.scorecard[this.currentFrame][this.currentRoll]['hitPins'] = hitPins`).
 * The use of numbers as keys within the scorecard object representing frames and rolls provided a convenient way to access particular values. This is at the expense of readability. I initially used strings as keys such as `frame7` and `roll2` and used methods to concatenate numbers, which made their meaning clearer to the user but add superfluous steps.
 
-## User Interface
+### User Interface
 * There is nothing to indicate which numbers of pins can't be chosen by the user because they exceed the number of pins remaining for that frame. Currently, when those buttons are pressed, nothing changes on the screen. I would use jQuery to change the appearance of the buttons reflection those options and make them unclickable.
 * There is no interaction with particular features of the bowling game such as a gutter game, a perfect game, a strike or a spare. I would add features which indicated these scenarios.
 * The table displaying the scorecard is difficult to read and requires further design work. I would make the table static when new values appear on it.
-
-## Testing
-* Further attention is needed on the test suite to ensure all outcomes of the game are covered.
-* The behaviour of the random bowl is currently stubbed with a long list of return values. Many of these tests were written before the option for the user to select a certain number of pins was added, so many of these tests can be refactored using explicit values. The use of helper methods would slim the test suite further.
-
-## Delivery
-* This solution is not currently implemented through a web interface. I would create one using a Sinatra framework to allow the app to be hosted.
-* There is no persistence so the user cannot access information from previous games after they have closed the browser. With a web interface, I would use HTML web storage to allow the user to store game data in localStorage for use between games.
